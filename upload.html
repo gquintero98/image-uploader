@@ -5,9 +5,9 @@
   <title>Subir imagen a Google Drive</title>
 </head>
 <body style="font-family: sans-serif; padding: 1em;">
-  <h3>Subir imagen</h3>
+  <h3>Subir comprobante</h3>
   <input type="file" id="fileInput" />
-  <button id="uploadBtn">Subir</button>
+  <button id="uploadBtn">Subir imagen</button>
   <p id="status"></p>
 
   <script>
@@ -19,11 +19,11 @@
       const file = fileInput.files[0];
 
       if (!file) {
-        status.textContent = "Por favor selecciona un archivo.";
+        status.textContent = "Selecciona un archivo.";
         return;
       }
 
-      status.textContent = "Subiendo...";
+      status.textContent = "Subiendo imagen...";
 
       const reader = new FileReader();
 
@@ -31,7 +31,7 @@
         const base64 = reader.result.split(',')[1];
 
         try {
-          const response = await fetch("TU_URL_DEL_SCRIPT", {
+          const response = await fetch("https://script.google.com/macros/s/AKfycbxpx4Vevzv8jdfkmpGSDagxtXWOksvTg2N3vgblPIUyRS4ES8d_8fHOlQeO_GmlozWo/exec", {
             method: 'POST',
             headers: {
               'Content-Type': file.type
@@ -43,13 +43,15 @@
 
           if (result.imageUrl) {
             status.innerHTML = `Imagen subida: <a href="${result.imageUrl}" target="_blank">Ver imagen</a>`;
+            // Enviar la URL al sitio Wix
+            window.parent.postMessage({ imageUrl: result.imageUrl }, "*");
           } else {
-            status.textContent = "Error al subir la imagen.";
+            status.textContent = "No se pudo subir la imagen.";
           }
 
         } catch (error) {
           console.error(error);
-          status.textContent = "Error en la subida.";
+          status.textContent = "Error al subir la imagen.";
         }
       };
 
