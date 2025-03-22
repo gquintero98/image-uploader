@@ -42,9 +42,11 @@
           const result = await response.json();
 
           if (result.imageUrl) {
-            status.innerHTML = `Imagen subida: <a href="${result.imageUrl}" target="_blank">Ver imagen</a>`;
-            // Enviar la URL al sitio Wix
+            console.log("📤 Enviando imageUrl a Wix:", result.imageUrl); // 🔍
+
             window.parent.postMessage({ imageUrl: result.imageUrl }, "*");
+
+            status.innerHTML = `Imagen subida: <a href="${result.imageUrl}" target="_blank">Ver imagen</a>`;
           } else {
             status.textContent = "No se pudo subir la imagen.";
           }
