@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Subir imagen a Google Drive</title>
+</head>
+<body style="font-family: sans-serif; padding: 1em;">
+  <h3>Subir imagen</h3>
+  <input type="file" id="fileInput" />
+  <button id="uploadBtn">Subir</button>
+  <p id="status"></p>
+
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const status = document.getElementById('status');
+
+    uploadBtn.addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (!file) {
+        status.textContent = "Por favor selecciona un archivo.";
+        return;
+      }
+
+      status.textContent = "Subiendo...";
+
+      const reader = new FileReader();
+
+      reader.onloadend = async () => {
+        const base64 = reader.result.split(',')[1];
+
+        try {
+          const response = await fetch("TU_URL_DEL_SCRIPT", {
+            method: 'POST',
+            headers: {
+              'Content-Type': file.type
+            },
+            body: base64
+          });
+
+          const result = await response.json();
+
+          if (result.imageUrl) {
+            status.innerHTML = `Imagen subida: <a href="${result.imageUrl}" target="_blank">Ver imagen</a>`;
+          } else {
+            status.textContent = "Error al subir la imagen.";
+          }
+
+        } catch (error) {
+          console.error(error);
+          status.textContent = "Error en la subida.";
+        }
+      };
+
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
+
